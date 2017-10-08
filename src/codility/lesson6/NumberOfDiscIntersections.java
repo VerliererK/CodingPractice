@@ -9,11 +9,11 @@ public class NumberOfDiscIntersections {
 		//int[] A = new int[]{1, 2147483647, 0};
 		//int[] A = new int[50000];
 		System.out.println(solution(A));
-		System.out.println(solution2(A));
+		System.out.println(solution_slow(A));
 	}
 
 	//O(N^2)
-	public static int solution(int[] A){
+	public static int solution_slow(int[] A){
 		int intersect = 0;
 		for(int i=0; i<A.length; i++)
 			for(int j=i+1; j<A.length; j++)
@@ -26,8 +26,18 @@ public class NumberOfDiscIntersections {
 	}
 
 	//O(NlogN)
+	//A[i] + A[j] >= j-i  --->  (far) A[i] + i >= (near) j - A[j]
+	//
+	// example: [1,5,2,1,4,0]
+	// far = [1 4 4 5 6 8], near = [-4 -1 0 0 2 5] (after sort)
+	// nonIntersect = (near < far)
+	// far[0]<far[1]<far[2]<near[5] ---> nonIntersect = 3
+	// far[0]<near[4] ---> nonIntersect = 3 + 1
+	// far[0]<near[3] = false ---> finish
+	//
+	// intersect = all - nonIntersect = N*(N-1)/2 - nonIntersect;
 	//Be care of Overflow...
-	public static int solution2(int[] A){
+	public static int solution(int[] A){
 		int N = A.length;
 		long[] far = new long[N];
 		long[] near = new long[N];
